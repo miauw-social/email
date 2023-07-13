@@ -12,19 +12,19 @@ class EmailService {
 
   void sendEmail(data) async {
     logger.i("connecting to smtp server");
-    bool prod = Platform.environment["mode"] == "prod";
+    bool prod = Platform.environment["MODE"] == "prod";
     final smtpServer = SmtpServer(
-      Platform.environment["smtp_host"].toString(),
-      port: int.parse(Platform.environment["smtp_port"] as String),
-      username: Platform.environment["smtp_username"],
-      password: Platform.environment["smtp_password"],
+      Platform.environment["SMTP_HOST"].toString(),
+      port: int.parse(Platform.environment["SMTP_PORT"] as String),
+      username: Platform.environment["SMTP_USER"],
+      password: Platform.environment["SMTP_PASSWORD"],
       allowInsecure: !prod,
       ssl: prod,
     );
     final file = File("templates/${data['type']}.html");
     final m = Mustache(map: data["payload"]);
     final message = Message()
-      ..from = Address("me@example.com", 'Laura at miauw')
+      ..from = Address(Platform.environment["SENDER_EMAIL"] as String, Platform.environment["SENDER_NAME"])
       ..recipients.add(data["recipient"])
       ..subject = data["subject"]
       ..html = m.convert(await file.readAsString());
