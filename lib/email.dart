@@ -13,18 +13,28 @@ class EmailService {
   void sendEmail(data) async {
     logger.i("connecting to smtp server");
     bool prod = Platform.environment["MODE"] == "prod";
-    final smtpServer = SmtpServer(
-      Platform.environment["SMTP_HOST"].toString(),
-      port: int.parse(Platform.environment["SMTP_PORT"] as String),
-      username: Platform.environment["SMTP_USER"],
-      password: Platform.environment["SMTP_PASSWORD"],
-      allowInsecure: !prod,
-      ssl: prod,
-    );
+    final SmtpServer smtpServer;
+    if (prod) {
+      smtpServer = SmtpServer(
+        Platform.environment["SMTP_HOST"].toString(),
+        port: int.parse(Platform.environment["SMTP_PORT"] as String),
+        username: Platform.environment["SMTP_USER"],
+        password: Platform.environment["SMTP_PASSWORD"],
+        allowInsecure: false,
+        ssl: true,
+      );
+    } else {
+      smtpServer = SmtpServer(
+        Platform.environment["SMTP_HOST"].toString(),
+        port: int.parse(Platform.environment["SMTP_PORT"] as String),
+        allowInsecure: true,
+      );
+    }
     final file = File("templates/${data['type']}.html");
     final m = Mustache(map: data["payload"]);
     final message = Message()
-      ..from = Address(Platform.environment["SENDER_EMAIL"] as String, Platform.environment["SENDER_NAME"])
+      ..from = Address(Platform.environment["SENDER_EMAIL"] as String,
+          Platform.environment["SENDER_NAME"])
       ..recipients.add(data["recipient"])
       ..subject = data["subject"]
       ..html = m.convert(await file.readAsString());
