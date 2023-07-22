@@ -1,0 +1,9 @@
+Hey there, {{username}}!
+Thank you for using miauw. Before you can start your journey, you need to verify your account.
+
+To verify, click this Link: {{link}}
+
+Kind regars,
+the miauw Team
+
+If you have no idea what this email is about just ignore it.
