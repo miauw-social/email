@@ -1,3 +1,6 @@
 README.md
 .gitignore
-analysis_options.yaml
+CHANGELOG.md
+README.md
+venv/
+.vscode
